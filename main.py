@@ -30,12 +30,12 @@ binary_string = ""
 for _ in range(int(input("Length of binary string: "))):
     binary_string = binary_string + str(random.randint(0, 1))
 
-start = time.time()
+s = time.time()
 z, o = binary_intervals(binary_string)
-end = time.time()
+e = time.time()
 
 print(f"String: {binary_string}")
 print(f"\nzeros: {z}")
 print(f"ones: {o}")
 
-print(f"\n\nExecuted in: {end-start} seconds.")
+print(f"\n\nExecuted in: {e - s} seconds.")
