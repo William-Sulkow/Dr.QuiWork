@@ -1,3 +1,7 @@
+import random
+import time
+
+
 def binary_intervals(s):
     ones = []
     zeros = []
@@ -6,16 +10,14 @@ def binary_intervals(s):
         start = i
         end = i
         if i + 1 < len(s) - 1:
-            while s[end] == s[end + 1]:
-                if end + 1 >= len(s) - 1:
-                    end = len(s) - 1
-                    break
-                else:
-                    end += 1
-                    if end - start == 5:
+            if i == 0 or s[i] != s[i - 1]:
+                while s[end] == s[end + 1]:
+                    if end + 1 >= len(s) - 1:
+                        end = len(s) - 1
                         break
+                    else:
+                        end += 1
 
-            if end - start == 5:
                 if s[start] == "1":
                     ones.append((start + 1, end + 1))
                 else:
@@ -24,7 +26,16 @@ def binary_intervals(s):
     return zeros, ones
 
 
-z, o = binary_intervals(input("Binary Number: "))
+binary_string = ""
+for _ in range(int(input("Length of binary string: "))):
+    binary_string = binary_string + str(random.randint(0, 1))
 
-print(f"zeros: {z}")
+start = time.time()
+z, o = binary_intervals(binary_string)
+end = time.time()
+
+print(f"String: {binary_string}")
+print(f"\nzeros: {z}")
 print(f"ones: {o}")
+
+print(f"\n\nExecuted in: {end-start} seconds.")
