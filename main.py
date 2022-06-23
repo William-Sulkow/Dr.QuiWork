@@ -2,7 +2,7 @@ import random
 import time
 
 
-def binary_intervals(s):
+def binary_intervals(s, min):
     ones = []
     zeros = []
 
@@ -12,12 +12,12 @@ def binary_intervals(s):
         if i == 0 or s[i] != s[i - 1]:
             if i + 1 <= len(s) - 1:
                 while s[end] == s[end + 1]:
-                    if end + 1 > len(s) - 1:
+                    if end + 1 >= len(s) - 1:
                         end = len(s) - 1
                         break
                     else:
                         end += 1
-
+        if end - start >= min - 1:
             if s[start] == "1":
                 ones.append((start + 1, end + 1))
             else:
@@ -31,7 +31,7 @@ for _ in range(int(input("Length of binary string: "))):
     binary_string = binary_string + str(random.randint(0, 1))
 
 s = time.time()
-z, o = binary_intervals(binary_string)
+z, o = binary_intervals(binary_string, int(input("Minimum interval: ")))
 e = time.time()
 
 print(f"String: {binary_string}")
