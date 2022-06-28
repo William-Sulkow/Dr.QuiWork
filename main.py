@@ -1,5 +1,6 @@
 import random
 import time
+import matplotlib
 
 
 def binary_intervals(s, min):
@@ -33,6 +34,14 @@ for _ in range(int(input("Length of binary string: "))):
 s = time.time()
 z, o = binary_intervals(binary_string, int(input("Minimum interval: ")))
 e = time.time()
+
+with open('data.txt') as f:
+    lines = f.readlines()
+
+for i in lines:
+    i.replace("\t", "")
+
+print(lines)
 
 print(f"String: {binary_string}")
 print(f"\nzeros: {z}")
