@@ -10,10 +10,12 @@ def plot(p, b_p):
     plt.yticks([-0.25, 0, 0.25])
 
     plt.axhline(y=0, color="r", linestyle='dashed')
-    plt.plot(p[1], label="")
-    plt.plot(b_p[1], label="")
+    plt.plot(p[1], label="cor coef")
+    plt.plot(b_p[1], label="window")
+    plt.plot(0.35)
 
-    plt.savefig("plot1.png")
+    plt.legend(loc="upper left")
+    plt.savefig('plot1.png')
 
 
 def intervals(s, min):
