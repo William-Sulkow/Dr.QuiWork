@@ -1,20 +1,19 @@
 import matplotlib.pyplot as plt
 import csv
-import random
+from text_to_csv import txt_to_csv
 
 
-def rand_binary():
-    binary_string = ""
-    for _ in range(int(input("Length of binary string: "))):
-        binary_string = binary_string + str(random.randint(0, 1))
-
-
-def binary_plot(p):
-    plt.plot(p[1])
-    plt.yticks([-1, 0, 1])
+def plot(p, b_p):
     plt.xlabel("Window Start")
     plt.ylabel("Binary Correlation Coefficient")
     plt.title("Runs of Positive and Negative Correlations")
+    plt.yticks([-0.25, 0, 0.25])
+
+    plt.axhline(y=0, color="r", linestyle='dashed')
+    plt.plot(p[1], label="")
+    plt.plot(b_p[1], label="")
+
+    plt.savefig("plot1.png")
 
 
 def intervals(s, min):
@@ -37,17 +36,8 @@ def intervals(s, min):
     return inter
 
 
-def float_plot(p):
-    plt.plot(p[1])
-    plt.yticks([-1, 0, 1])
-    plt.xlabel("Window Start")
-    plt.ylabel("Correlation Coefficient")
-    plt.title("Runs of Positive and Negative Correlations")
-    plt.savefig("plot.png")
-
-
 data = []
-with open('data.csv', newline='') as csvfile:
+with open('combined_cor_analysis_results.csv', newline='') as csvfile:
     d = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in d:
         data.append(row)
@@ -62,10 +52,8 @@ for i in ints:
         points[1].append(round(float(data[j][1]), 2))
         b_points[0].append(data[j][0])
         if float(data[j][1]) > 0:
-            b_points[1].append(1)
+            b_points[1].append(0.25)
         else:
-            b_points[1].append(-1)
+            b_points[1].append(-0.25)
 
-print(points)
-binary_plot(b_points)
-float_plot(points)
+plot(points, b_points)
