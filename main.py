@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import csv
-from text_to_csv import txt_to_csv
+from file_write import file_write
 
 
 def plot(p, b_p):
@@ -15,7 +15,7 @@ def plot(p, b_p):
     plt.plot(0.35)
 
     plt.legend(loc="upper left")
-    plt.savefig('plot1.png')
+    plt.savefig('plot.png', dpi=300, bbox_inches='tight')
 
 
 def intervals(s, min):
@@ -58,4 +58,5 @@ for i in ints:
         else:
             b_points[1].append(-0.25)
 
-plot(points, b_points)
+# plot(points, b_points)
+file_write(ints, b_points, "windows.csv")
