@@ -18,7 +18,7 @@ def plot(p, b_p):
     plt.savefig('plot.png', dpi=300, bbox_inches='tight')
 
 
-def intervals(s, min):
+def intervals(s):
     inter = []
 
     for i in range(len(s)):
@@ -32,8 +32,7 @@ def intervals(s, min):
                         break
                     else:
                         end += 1
-            if end - start >= min - 1:
-                inter.append((start, end))
+            inter.append((start, end))
 
     return inter
 
@@ -44,7 +43,8 @@ with open('combined_cor_analysis_results.csv', newline='') as csvfile:
     for row in d:
         data.append(row)
 
-ints = intervals(data, 0)
+ints = intervals(data)
+
 
 points = [[], []]
 b_points = [[], []]
@@ -58,5 +58,5 @@ for i in ints:
         else:
             b_points[1].append(-0.25)
 
-# plot(points, b_points)
+plot(points, b_points)
 file_write(ints, b_points, "windows.csv")
