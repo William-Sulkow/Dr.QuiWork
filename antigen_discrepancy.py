@@ -6,7 +6,7 @@ from difflib import SequenceMatcher
 # QUESTIONS FOR DR. QUI
 # In csv file, not every index is represented. Ex: first index is 4.
 
-def win_read(fn):
+def win_read(fn, remove_first=False):
     f = open(fn)
 
     csvreader = csv.reader(f)
@@ -15,31 +15,43 @@ def win_read(fn):
         w.append(row)
 
     f.close()
+    if remove_first:
+        del w[0]
+
     return w
 
 
 windows = win_read("windows.csv")
-raw_window_data = win_read("combined_cor_analysis_results.csv")
 
 filename = "sequence_data.aln"
 alignment = AlignIO.read(filename, "clustal")
 
-sequences = []
+combos = []
 for i in alignment:
-    sequences.append(i)
+    for j in alignment:
+        if i.id != j.id:
+            combos.append((i, j))
 
-combos = [(a, b) for idx, a in enumerate(sequences) for b in sequences[idx + 1:]]
+ODs_raw = win_read("OD_data.csv", True)
+ODs = {}
+
+x = 0
+for i in ODs_raw:
+    if (i[0], i[3].replace("anti-", "")) in ODs:
+        ODs[(i[0], i[3].replace("anti-", ""))].append(i[7])
+    else:
+        ODs[(i[0], i[3].replace("anti-", ""))] = [i[7]]
 
 
 def tall_data():
-    global combos, windows
-    data = [["Start", "End", "#1", "#2", "Seq #1", "Seq #2", "Diff", "OD"]]
+    data = []
     for combo in combos:
-        for win in windows:
-            seq_1 = combo[0].seq[int(win[1]):int(win[2]) + 6 + 1]
-            seq_2 = combo[1].seq[int(win[1]):int(win[2]) + 6 + 1]
-            data.append([win[1], int(win[2]) + 6, combo[0].id, combo[1].id, str(seq_1), str(seq_2),
-                         round(1.0 - SequenceMatcher(None, seq_1, seq_2).ratio(), 5)])
+        for od in ODs[(combo[0].id, combo[1].id)]:
+            for win in windows:
+                seq_1 = combo[0].seq[int(win[1]):int(win[2]) + 6 + 1]
+                seq_2 = combo[1].seq[int(win[1]):int(win[2]) + 6 + 1]
+                data.append([combo[0].id, combo[1].id, od, win[1], int(win[2]) + 6, str(seq_1), str(seq_2),
+                             round(1.0 - SequenceMatcher(None, seq_1, seq_2).ratio(), 5)])
 
     with open('diff_output_tall.tsv', 'w', newline='') as f_output:
         tsv_output = csv.writer(f_output, delimiter='\t')
@@ -48,15 +60,15 @@ def tall_data():
 
 
 def wide_data():
-    global combos, windows
     data = []
     for combo in combos:
-        combo_data = [combo[0].id, combo[1].id]
-        for win in windows:
-            seq_1 = combo[0].seq[int(win[1]):int(win[2]) + 6 + 1]
-            seq_2 = combo[1].seq[int(win[1]):int(win[2]) + 6 + 1]
-            combo_data.append(round(1.0 - SequenceMatcher(None, seq_1, seq_2).ratio(), 5))
-        data.append(combo_data)
+        for od in ODs[(combo[0].id, combo[1].id)]:
+            combo_data = [combo[0].id, combo[1].id, od]
+            for win in windows:
+                seq_1 = combo[0].seq[int(win[1]):int(win[2]) + 6 + 1]
+                seq_2 = combo[1].seq[int(win[1]):int(win[2]) + 6 + 1]
+                combo_data.append(round(1.0 - SequenceMatcher(None, seq_1, seq_2).ratio(), 5))
+            data.append(combo_data)
 
     with open('diff_output_wide.tsv', 'w', newline='') as f_output:
         tsv_output = csv.writer(f_output, delimiter='\t')
